@@ -1,71 +1,153 @@
-# Fermin Writer - AWS Edition
+# 🖋️ Fermin Writer - AWS Edition
 
-A gothic story generator that processes audio files using AWS services to create haunting narratives in the style of Fermín Romero de Torres from "The Shadow of the Wind".
+> *"Every book, every volume you see here, has a soul. The soul of the person who wrote it and of those who read and lived and dreamed with it."* - Carlos Ruiz Zafón
 
-## AWS Services Used
+A gothic story generator that transforms audio recordings into haunting narratives in the style of Fermín Romero de Torres from "The Shadow of the Wind". Using the power of AWS AI services, this application creates atmospheric tales that capture the essence of Barcelona's literary mysteries.
 
-- **Amazon S3**: Storage for audio files and generated stories
-- **Amazon Transcribe**: Audio-to-text transcription
-- **Amazon Bedrock**: AI-powered story generation using Amazon Nova
+## ✨ Features
 
-## Setup
+- 🎵 **Audio Processing**: Supports multiple audio formats (M4A, MP3, WAV)
+- 📝 **AI Transcription**: High-accuracy speech-to-text conversion
+- 🏰 **Gothic Story Generation**: Creates 3 unique story variations in Fermín's distinctive style
+- ☁️ **Cloud-Native**: Fully integrated with AWS services
+- 📚 **Automated Workflow**: End-to-end processing from audio to published stories
 
-1. **Install dependencies:**
-   ```bash
-   pip install -r requirements.txt
-   ```
+## 🛠️ AWS Services Used
 
-2. **Configure AWS credentials:**
-   - Copy `.env.example` to `.env`
-   - Fill in your AWS credentials and S3 bucket information
-   - Or use AWS CLI: `aws configure`
+| Service | Purpose | Features Used |
+|---------|---------|---------------|
+| **Amazon S3** | Storage for audio files and generated stories | Object storage, versioning |
+| **Amazon Transcribe** | Audio-to-text transcription | Real-time transcription, punctuation |
+| **Amazon Bedrock** | AI-powered story generation | Amazon Nova model, prompt engineering |
 
-3. **Create S3 bucket and upload audio:**
-   ```bash
-   aws s3 mb s3://your-fermin-bucket
-   aws s3 cp audio/audio.m4a s3://your-fermin-bucket/audio/
-   ```
+## 📋 Prerequisites
 
-4. **Run the application:**
-   ```bash
-   python main.py
-   ```
+- Python 3.8 or higher
+- Audio file in supported format (M4A, MP3, WAV)
 
-## Configuration
+## 🚀 Quick Start
 
-Set these environment variables in `.env`:
+### Clone and Install
+```bash
+git clone <repository-url>
+cd Fermin-writer
+pip install -r requirements.txt
+```
 
-- `S3_BUCKET_NAME`: Your S3 bucket name
-- `AUDIO_S3_KEY`: Path to audio file in S3 (e.g., "audio/audio.m4a")
-- `AWS_DEFAULT_REGION`: AWS region (default: us-east-1)
+## ⚙️ Configuration
 
-## Workflow
+### Supported Audio Formats
+- M4A (recommended)
+- MP3
+- WAV
+- FLAC
 
-1. **Download**: Fetches audio file from S3
-2. **Transcribe**: Uses Amazon Transcribe to convert audio to text
-3. **Generate**: Creates 3 gothic story variations using Bedrock
-4. **Upload**: Saves generated stories back to S3
+## 🔄 How It Works
 
-## Output
+```mermaid
+graph LR
+    A[Audio File in S3] --> B[Download Audio]
+    B --> C[Amazon Transcribe]
+    C --> D[Text Processing]
+    D --> E[Amazon Bedrock]
+    E --> F[3 Story Variations]
+    F --> G[Upload to S3]
+```
 
-Generated stories are uploaded to S3 under the `fermin-audio/history/` prefix:
-- `fermin-audio/history/{audio_name}_story_1.txt`
-- `fermin-audio/history/{audio_name}_story_2.txt`
-- `fermin-audio/history/{audio_name}_story_3.txt`
+1. **📥 Download**: Fetches audio file from your S3 bucket
+2. **🎤 Transcribe**: Amazon Transcribe converts speech to text with punctuation
+3. **🤖 Generate**: Amazon Bedrock creates 3 gothic story variations using the Nova model
+4. **📤 Upload**: Stories are saved back to S3 with organized naming
+5. **✅ Complete**: Ready-to-read gothic tales in Fermín's style
 
-## AWS Permissions
+## 📖 Output
 
-Bucket S3
+Generated stories are automatically uploaded to S3 with organized structure:
 
-- `s3:GetObject`
-- `s3:PutObject`
-- `s3:ListBucket`
+```
+s3://your-bucket/
+└── fermin-audio/
+    └── history/
+        ├── {audio_name}_story_1.txt
+        ├── {audio_name}_story_2.txt
+        └── {audio_name}_story_3.txt
+```
 
-AWS Lambda
-- `s3:GetObject`
-- `s3:PutObject`
-- `s3:ListBucket`
-- `bedrock:InvokeModel`
-- `transcribe:StartTranscriptionJob`
-- `transcribe:GetTranscriptionJob`
-- `transcribe:ListTranscriptionJobs`
+### Story Characteristics
+- **Length**: 500-800 words per story
+- **Style**: Gothic atmosphere with Barcelona setting
+- **Tone**: Mysterious, melancholic, literary
+- **Character**: Written from Fermín's perspective
+
+## 🔐 AWS Permissions
+
+### Required IAM Permissions
+
+#### For S3 Operations
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:GetObject",
+                "s3:PutObject",
+                "s3:ListBucket"
+            ],
+            "Resource": [
+                "arn:aws:s3:::your-fermin-bucket",
+                "arn:aws:s3:::your-fermin-bucket/*"
+            ]
+        }
+    ]
+}
+```
+
+#### For Transcribe and Bedrock
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "transcribe:StartTranscriptionJob",
+                "transcribe:GetTranscriptionJob",
+                "transcribe:ListTranscriptionJobs",
+                "bedrock:InvokeModel"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+```
+
+## 🐛 Troubleshooting
+
+### Common Issues
+
+| Issue | Solution |
+|-------|----------|
+| **Audio file not found** | Verify S3 path and bucket permissions |
+| **Transcription fails** | Check audio format and file size (<2GB) |
+| **Bedrock access denied** | Ensure model access is enabled in AWS Console |
+| **Stories not uploading** | Verify S3 write permissions |
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🙏 Acknowledgments
+
+- Inspired by Carlos Ruiz Zafón's "The Shadow of the Wind"
+- Powered by AWS AI services
+- Hazlo con el tipo de ❤️ que deja huellas en el alma
